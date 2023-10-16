@@ -94,6 +94,13 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 <!--        redis end-->
+<!--        hutool start-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.8.16</version>
+        </dependency>
+<!--        hutool end-->
     </dependencies>
 
     <build>

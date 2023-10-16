@@ -21,7 +21,7 @@ public class SaTokenConfigure implements WebMvcConfigurer {
             // 指定一条 match 规则
             SaRouter
                     .match("/**")    // 拦截的 path 列表，可以写多个 */
-                    .notMatch("/login/**")        // 排除掉的 path 列表，可以写多个
+//                    .notMatch("/login/**")        // 排除掉的 path 列表，可以写多个
                     .check(r -> StpUtil.checkLogin());        // 要执行的校验动作，可以写完整的 lambda 表达式
 
             // 根据路由划分模块，不同模块不同鉴权
@@ -31,7 +31,7 @@ public class SaTokenConfigure implements WebMvcConfigurer {
             SaRouter.match("/orders/**", r -> StpUtil.checkPermission("orders"));
             SaRouter.match("/notice/**", r -> StpUtil.checkPermission("notice"));
             SaRouter.match("/comment/**", r -> StpUtil.checkPermission("comment"));
-            SaRouter.match("/test/**", r -> StpUtil.checkRole("admin"));
+            SaRouter.match("/test/**", r -> StpUtil.checkRole("超级管理员"));
         }))
         //作用于全部目录
         .addPathPatterns("/**")
@@ -41,7 +41,9 @@ public class SaTokenConfigure implements WebMvcConfigurer {
                 "/**/swagger-resources",
                 "/**/webjars/**",
                 "/**/v3/api-docs/**"
-        );
+        )
+        //排除login
+        .excludePathPatterns("/login/**");
 
 
     }

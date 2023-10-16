@@ -1,10 +1,19 @@
 package com.clubio.config;
 
 import cn.dev33.satoken.stp.StpInterface;
+import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.clubio.entity.Role;
+import com.clubio.entity.User;
+import com.clubio.entity.UserRole;
+import com.clubio.service.RoleService;
+import com.clubio.service.UserRoleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Smile
@@ -16,9 +25,12 @@ import java.util.List;
 // 保证此类被 SpringBoot 扫描，完成 Sa-Token 的自定义权限验证扩展
 @Component
 public class StpInterfaceImpl implements StpInterface {
-
+    @Autowired
+    private UserRoleService userRoleService;
+    @Autowired
+    private RoleService roleService;
     /**
-     * 返回一个账号所拥有的权限码集合
+     * 返回一个账号所拥有的权限码集合(未使用)
      */
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
@@ -39,11 +51,23 @@ public class StpInterfaceImpl implements StpInterface {
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
         System.out.println("权限---->"+loginId+"---"+loginType);
-        // 本 list 仅做模拟，实际项目中要根据具体业务逻辑来查询角色
-        List<String> list = new ArrayList<String>();
-        list.add("admin");
-        list.add("super-admin");
-        return list;
+        LambdaQueryWrapper<UserRole> userRoleQueryWrapper = new LambdaQueryWrapper<UserRole>()
+                .eq(UserRole::getUserId, loginId);
+        List<UserRole> userRoleList = userRoleService.list(userRoleQueryWrapper);
+        //权限集合
+        List<String> roleList = new ArrayList<String>();
+        if (ObjectUtil.isNotNull(userRoleList)) {
+            userRoleList.forEach(userRole -> {
+                LambdaQueryWrapper<Role> roleLambdaQueryWrapper = new LambdaQueryWrapper<Role>()
+                        .eq(Role::getRoleId, userRole.getRoleId());
+                Role role = roleService.getOne(roleLambdaQueryWrapper);
+                roleList.add(role.getRoleName());
+            });
+        }
+        //去重复后返回
+        return roleList.stream()
+                .distinct()
+                .collect(Collectors.toList());
     }
 
 }
