@@ -8,6 +8,7 @@ import com.clubio.entity.User;
 import com.clubio.entity.UserRole;
 import com.clubio.service.RoleService;
 import com.clubio.service.UserRoleService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 // 保证此类被 SpringBoot 扫描，完成 Sa-Token 的自定义权限验证扩展
 @Component
+@Slf4j
 public class StpInterfaceImpl implements StpInterface {
     @Autowired
     private UserRoleService userRoleService;
@@ -50,7 +52,7 @@ public class StpInterfaceImpl implements StpInterface {
      */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        System.out.println("权限---->"+loginId+"---"+loginType);
+        log.info("loginid---->{}---logintype----->{}",loginId,loginType);
         LambdaQueryWrapper<UserRole> userRoleQueryWrapper = new LambdaQueryWrapper<UserRole>()
                 .eq(UserRole::getUserId, loginId);
         List<UserRole> userRoleList = userRoleService.list(userRoleQueryWrapper);
