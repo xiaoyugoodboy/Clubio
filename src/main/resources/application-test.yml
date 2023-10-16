@@ -1,0 +1,15 @@
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3307/clubio?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+#    username: root
+#    password: 123456
+
+#    hikari:
+#      #设置事务自动提交
+#      auto-commit: true
+#      #设置最大连接数
+#      maximum-pool-size: 10
+#      minimum-idle: 10
+#      #获取连接是，检测语句
+#      connection-test-query: select 1
+#      #连接超时设置
+#      connection-timeout: 20000
